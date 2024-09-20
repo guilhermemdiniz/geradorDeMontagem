@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Montagem</title>
+
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-width: 100vw;
+      font-family: "Open Sans", sans-serif;
+      text-align: center;
+    }
+
+    .preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 20px;
+    }
+    .preview img {
+      /* max-width: 100px;
+      max-height: 100px; */
+      border: 0px solid #ccc;
+      padding: 0;
+    }
+
+    .custom-file-upload {
+      display: inline-block;
+      padding: 10px 20px;
+      color: white;
+      background-color: #007bff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #nota {
+      align-self: flex-start;
+      margin-left: 24px;
+      font-size: 22px;
+      font-weight: 700;
+      border: 1px solid grey;
+      border-radius: 10px;
+      padding: 2px 10px 2px 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="margin-top: 24px;">Criar Montagem</h1>
+
+  <!-- Botão para Upload de Arquivos -->
+  <input type="file" id="fileInput" accept="image/*" multiple style="display: none;"/>
+
+  <label for="fileInput" class="custom-file-upload" style="margin-top: 20px;">
+    Escolher imagens
+  </label>
+
+  <div style="display: flex; flex-direction: column; gap: 4px; margin: 40px 10px 0 10px;">
+    <p style="align-self: flex-start; font-size: 18px; font-weight: 500 ;">Descrição:</p>
+    <input 
+    style="padding: 10px 5px; border-radius: 8px; font-size: 14px;"
+    type="text" id="textInput" name="nota" placeholder="adicione um comentário..."/>
+  </div>
+  
+  <!-- Container para pré-visualização -->
+  <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; margin-top: 100px; margin-bottom: 100px;">
+      <p style="font-weight: 600; font-size: 16px;" id="nota"></p>
+      <div class="preview" id="imagePreview">
+        <!-- <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img">
+        <img src="./logo (2).png" alt="img"> -->
+      </div>
+  </div>
+
+  <script>
+    // Pega a largura da tela
+    const screenWidth = window.innerWidth;
+
+
+    const inputNota = document.getElementById('textInput');
+    let textNota = document.getElementById('nota');
+    inputNota.addEventListener('change', (change) => {
+        textNota.innerHTML = `${inputNota.value}`;        
+    })
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+      const files = event.target.files;  // Obter os arquivos selecionados
+      const previewContainer = document.getElementById('imagePreview');
+      previewContainer.innerHTML = '';  // Limpar pré-visualização anterior
+
+      // Verificar se existem arquivos selecionados
+      if (files.length > 0) {
+        Array.from(files).forEach(file => {
+          // Verificar se o arquivo é uma imagem
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            
+            // Função executada quando o arquivo é lido
+            reader.onload = function(e) {
+              // Criar elemento de imagem para a pré-visualização
+              const imgElement = document.createElement('img');
+
+              let numImages = 1;
+
+              if(files.length > 1) {
+                if(files.length <= 4) {
+                    numImages = 2;
+                }
+                else if(files.length <= 9) {
+                    numImages = 3;
+                }
+                else numImages = 4;
+              }
+
+              imgElement.style.maxWidth = `${screenWidth/numImages}px`;
+              imgElement.style.maxHeight = `${screenWidth/numImages}px`;
+              imgElement.src = e.target.result;
+              previewContainer.appendChild(imgElement);
+            };
+            
+            // Ler o arquivo como uma URL
+            reader.readAsDataURL(file);
+
+          } else {
+            alert('Arquivo não é uma imagem: ' + file.name);
+          }
+        });
+      }
+    });
+
+  </script>
+
+</body>
+</html>
